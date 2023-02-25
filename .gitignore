@@ -57,7 +57,7 @@ cmake-build-*/
 out/
 .gradle/
 build/
-api/src/main/resources/*.yml
+*.yml
 
 
 # mpeltonen/sbt-idea plugin
