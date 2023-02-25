@@ -25,6 +25,8 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        logger.info("====JWT Filter Running====")
+
         val authHeader: String? = request.getHeader("Authorization") // 헤더에서 Authorization의 값을 가져온다.
         var jwt: String
         var userEmail: String
