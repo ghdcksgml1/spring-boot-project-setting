@@ -4,7 +4,9 @@ import com.proseed.api.auth.dto.AuthRegisterRequest
 import com.proseed.api.auth.dto.AuthRequest
 import com.proseed.api.auth.dto.AuthResponse
 import com.proseed.api.auth.service.AuthService
+import com.proseed.api.user.exception.UserNotFoundException
 import com.proseed.api.user.model.User
+import com.proseed.api.user.repository.UserRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/auth")
 class AuthController(
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val userRepository: UserRepository
 ) {
 
     @PostMapping("/register")
@@ -34,5 +37,11 @@ class AuthController(
     @GetMapping("/valid")
     fun isValidToken(@AuthenticationPrincipal user: User): Boolean {
         return user != null
+    }
+
+    @PostMapping("/test")
+    fun errorTest(@RequestBody request: AuthRequest): ResponseEntity<AuthResponse> {
+        var user = userRepository.findByEmail(request.email) ?: throw UserNotFoundException()
+        return ResponseEntity.ok(AuthResponse("ok"))
     }
 }

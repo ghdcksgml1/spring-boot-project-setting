@@ -4,6 +4,7 @@ import com.proseed.api.auth.dto.AuthRegisterRequest
 import com.proseed.api.auth.dto.AuthRequest
 import com.proseed.api.auth.dto.AuthResponse
 import com.proseed.api.config.jwt.JwtService
+import com.proseed.api.user.exception.UserNotFoundException
 import com.proseed.api.user.model.Role
 import com.proseed.api.user.model.User
 import com.proseed.api.user.repository.UserRepository
@@ -41,7 +42,7 @@ class AuthService(
                 request.password
             )
         )
-        var user = userRepository.findByEmail(request.email) ?: throw UsernameNotFoundException("User Email is not correct")
+        var user = userRepository.findByEmail(request.email) ?: throw UserNotFoundException()
         var jwtToken = jwtService.generateToken(user)
 
         return AuthResponse(jwtToken)
