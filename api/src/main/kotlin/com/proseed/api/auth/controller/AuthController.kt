@@ -3,6 +3,7 @@ package com.proseed.api.auth.controller
 import com.proseed.api.auth.dto.AuthRegisterRequest
 import com.proseed.api.auth.dto.AuthRequest
 import com.proseed.api.auth.dto.AuthResponse
+import com.proseed.api.auth.dto.kakao.KakaoLoginPageResponse
 import com.proseed.api.auth.service.AuthService
 import com.proseed.api.user.exception.UserNotFoundException
 import com.proseed.api.user.model.User
@@ -17,6 +18,15 @@ class AuthController(
     private val authService: AuthService,
     private val userRepository: UserRepository
 ) {
+    // OAuth 2.0 Get kakao loginPage
+    @GetMapping("/kakao/loginPage")
+    fun kakaoLoginPage(): ResponseEntity<KakaoLoginPageResponse> {
+        return ResponseEntity.ok(authService.kakaoLoginPage())
+    }
+
+    // OAuth 2.0
+
+
 
     @PostMapping("/register")
     fun register(
@@ -35,13 +45,17 @@ class AuthController(
     }
 
     @GetMapping("/valid")
-    fun isValidToken(@AuthenticationPrincipal user: User): Boolean {
+    fun isValidToken(
+        @AuthenticationPrincipal user: User
+    ): Boolean {
         return user != null
     }
 
     @PostMapping("/test")
-    fun errorTest(@RequestBody request: AuthRequest): ResponseEntity<AuthResponse> {
-        var user = userRepository.findByEmail(request.email) ?: throw UserNotFoundException()
+    fun errorTest(
+        @RequestBody request: AuthRequest
+    ): ResponseEntity<AuthResponse> {
+        var user = userRepository.findByPlatformId(request.platformId) ?: throw UserNotFoundException()
         return ResponseEntity.ok(AuthResponse("ok"))
     }
 }

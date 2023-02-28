@@ -12,9 +12,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
@@ -27,7 +29,7 @@ internal class AuthControllerTest(
 
     @Test
     fun `register 테스트`() {
-        val register = AuthRegisterRequest("hong", "chanhee", "ghdcksgml2@naver.com", "1234")
+        val register = AuthRegisterRequest("hongchanhui", "ghdcksgml2@naver.com", "1234567", "KAKAO")
         val registerJson = ObjectMapper().writeValueAsString(register)
 
         mockMvc.perform(
@@ -41,10 +43,10 @@ internal class AuthControllerTest(
 
     @Test
     fun `authenticate 테스트`() {
-        val register = AuthRegisterRequest("hong", "chanhee", "ghdcksgml2@naver.com", "1234")
+        val register = AuthRegisterRequest("hongchanhui", "ghdcksgml2@naver.com", "123456722", "KAKAO")
         authService.register(register)
 
-        val authenticate = AuthRequest("ghdcksgml2@naver.com", "1234")
+        val authenticate = AuthRequest("123456722", "KAKAO")
         val authenticateJson = ObjectMapper().writeValueAsString(authenticate)
 
         mockMvc.perform(
@@ -55,6 +57,18 @@ internal class AuthControllerTest(
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andDo(MockMvcResultHandlers.print())
 
+    }
+
+    @Test
+    fun `kakoLoginPage 테스트`() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/auth/kakao/loginPage")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(
+                jsonPath("\$.loginPage").isNotEmpty
+            )
+            .andDo(MockMvcResultHandlers.print())
     }
 
 }
