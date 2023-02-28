@@ -42,7 +42,7 @@ class JwtService(
             .setClaims(extraClaims) // claims 설정
             .setSubject(userDetails.username) // subject에 username을 넣어준다.
             .setIssuedAt(Date(System.currentTimeMillis())) // 발급날짜는 현재 시간
-            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 24)) // 만료날짜 설정
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * 60 * 30)) // 만료날짜 설정 (30분)
             .signWith(getSignInKey(), SignatureAlgorithm.HS256) // 디코딩된 시크릿키 가져오고, SignatureAlgorithm은 HS256 명시
             .compact() // 압축
     }

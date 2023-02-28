@@ -1,5 +1,6 @@
 package com.proseed.api.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.proseed.api.user.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,6 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 class ApplicationConfig(
     private val userRepository: UserRepository
 ) {
+
+    @Bean
+    fun objectMapper(): ObjectMapper {
+        return ObjectMapper()
+    }
 
     @Bean
     fun userDetailsService(): UserDetailsService { // UserDetailsService 빈 등록
