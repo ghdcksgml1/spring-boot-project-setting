@@ -9,10 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails
 data class User(
     @Id @GeneratedValue
     val id: Int? = null,
-    val firstname: String,
-    val lastname: String,
+    val nickName: String,
     val email: String,
-    val _password: String,
+    val platformId: String,
+    val platformType: String,
     @Enumerated(EnumType.STRING)
     val role: Role
 ) : UserDetails {
@@ -25,11 +25,11 @@ data class User(
     }
 
     override fun getPassword(): String {
-        return _password
+        return platformType
     }
 
     override fun getUsername(): String {
-        return email
+        return platformId
     }
 
     override fun isAccountNonExpired(): Boolean {
@@ -50,6 +50,6 @@ data class User(
     // ====
 
     override fun toString(): String {
-        return "User(id=$id, firstname='$firstname', lastname='$lastname', email='$email', _password='$_password', role=$role)"
+        return "User(id=$id, nickName='$nickName', email='$email', platformId='$platformId', platformType='$platformType', role=$role)"
     }
 }

@@ -19,7 +19,7 @@ class ApplicationConfig(
     @Bean
     fun userDetailsService(): UserDetailsService { // UserDetailsService 빈 등록
         return UserDetailsService { // SAM(Single Abstract Method) 객체 구현
-            userRepository.findByEmail(it) ?: throw UsernameNotFoundException("User not found")
+            userRepository.findByPlatformId(it) ?: throw UsernameNotFoundException("User not found")
         }
     }
 
