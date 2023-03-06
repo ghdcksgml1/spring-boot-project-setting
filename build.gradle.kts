@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.regex.Pattern.compile
 
 plugins {
 	id("org.springframework.boot") version "3.0.3"
@@ -29,15 +30,15 @@ subprojects {
 	apply(plugin = "kotlin-spring") //all-open\
 
 	dependencies {
-		implementation("org.springframework.boot:spring-boot-starter-webflux")
 		implementation("org.springframework.boot:spring-boot-starter-web")
 		implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 		implementation("org.jetbrains.kotlin:kotlin-reflect")
 		implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+		compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
+
 		developmentOnly("org.springframework.boot:spring-boot-devtools")
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
-		testImplementation("io.projectreactor:reactor-test")
 	}
 
 	dependencyManagement {
