@@ -1,20 +1,29 @@
 package com.proseed.api.auth.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.proseed.api.auth.dto.AuthRegisterRequest
 import com.proseed.api.auth.dto.AuthRequest
 import com.proseed.api.auth.dto.AuthResponse
 import com.proseed.api.auth.dto.kakao.KakaoLoginPageResponse
+import com.proseed.api.auth.dto.kakao.KakaoTokenRequest
+import com.proseed.api.auth.dto.kakao.KakaoTokenResponse
+import com.proseed.api.auth.dto.kakao.KakaoValueBuilder
+import com.proseed.api.config.exception.auth.kakao.KakaoAuthorizationCodeNotFoundException
 import com.proseed.api.config.jwt.JwtService
 import com.proseed.api.user.exception.UserNotFoundException
 import com.proseed.api.user.model.Role
 import com.proseed.api.user.model.User
 import com.proseed.api.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 
 @Service
 class AuthService(
@@ -22,14 +31,9 @@ class AuthService(
     private val passwordEncoder: BCryptPasswordEncoder,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager,
-    @Value("\${spring.security.oauth2.client.provider.authorization-uri}") var authorizationUri: String,
-    @Value("\${spring.security.oauth2.client.provider.token-uri}") var tokenUri: String,
-    @Value("\${spring.security.oauth2.client.provider.user-info-uri}") var userInfoUri: String,
-    @Value("\${spring.security.oauth2.client.kakao.client-id}") var clientId: String,
-    @Value("\${spring.security.oauth2.client.kakao.client-secret}") var clientSecret: String,
-    @Value("\${spring.security.oauth2.client.kakao.redirect-uri}") var redirectUri: String,
-    @Value("\${spring.security.oauth2.client.kakao.scope}") var scope: String,
-    @Value("\${spring.security.oauth2.client.kakao.nonce}") var nonce: String
+    private val kakaoValueBuilder: KakaoValueBuilder,
+    private val restTemplate: RestTemplate,
+    private val objectMapper: ObjectMapper
 ) {
     fun register(request: AuthRegisterRequest): AuthResponse {
         var user = User(
@@ -59,14 +63,22 @@ class AuthService(
     }
 
     fun kakaoLoginPage(): KakaoLoginPageResponse {
-        return KakaoLoginPageResponse(
-            loginPage = "${authorizationUri}?" +
-                    "response_type=code&" +
-                    "client_id=${clientId}&" +
-                    "redirect_uri=${redirectUri}&" +
-                    "client_secret=${clientSecret}&" +
-                    "scope=${scope}&" +
-                    "nonce=${nonce}"
-        )
+        return kakaoValueBuilder.kakaoLoginPageResponse()
+    }
+
+    // 토큰 발급 시스템
+    fun kakaoTokenProvider(code: String): KakaoTokenResponse {
+        // Header 설정
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
+
+        // kakaoTokenRequest 객체 생성
+        val kakaoTokenRequest = kakaoValueBuilder.kakaoTokenRequest(code)
+
+        return restTemplate.postForObject(
+            "https://kauth.kakao.com/oauth/token",
+            HttpEntity(KakaoTokenRequest.of(kakaoTokenRequest), headers),
+            KakaoTokenResponse::class.java
+        ) ?: throw KakaoAuthorizationCodeNotFoundException()
     }
 }

@@ -4,6 +4,7 @@ import com.proseed.api.auth.dto.AuthRegisterRequest
 import com.proseed.api.auth.dto.AuthRequest
 import com.proseed.api.auth.dto.AuthResponse
 import com.proseed.api.auth.dto.kakao.KakaoLoginPageResponse
+import com.proseed.api.auth.dto.kakao.KakaoTokenResponse
 import com.proseed.api.auth.service.AuthService
 import com.proseed.api.user.exception.UserNotFoundException
 import com.proseed.api.user.model.User
@@ -24,8 +25,13 @@ class AuthController(
         return ResponseEntity.ok(authService.kakaoLoginPage())
     }
 
-    // OAuth 2.0
-
+    // OAuth 2.0 Token Provider
+    @GetMapping("/kakao/callback")
+    fun kakaoTokenProvider(
+        @RequestParam("code") code: String
+    ): ResponseEntity<KakaoTokenResponse> {
+        return ResponseEntity.ok(authService.kakaoTokenProvider(code))
+    }
 
 
     @PostMapping("/register")
