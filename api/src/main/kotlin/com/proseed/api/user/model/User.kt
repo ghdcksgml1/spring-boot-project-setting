@@ -13,11 +13,12 @@ data class User(
     val email: String,
     val platformId: String,
     val platformType: String,
+    val profileImageUrl: String, // TODO: Default Image Url
     @Enumerated(EnumType.STRING)
     val role: Role
 ) : UserDetails {
 
-    constructor() : this(null,"","","","",Role.USER) // NoArgsConstructor
+    constructor() : this(null,"","","","","",Role.USER) // NoArgsConstructor
 
     // UserDetails Implements
     override fun getAuthorities(): List<SimpleGrantedAuthority> {
@@ -25,11 +26,11 @@ data class User(
     }
 
     override fun getPassword(): String {
-        return platformType
+        return platformId
     }
 
     override fun getUsername(): String {
-        return platformId
+        return email
     }
 
     override fun isAccountNonExpired(): Boolean {
@@ -50,6 +51,6 @@ data class User(
     // ====
 
     override fun toString(): String {
-        return "User(id=$id, nickName='$nickName', email='$email', platformId='$platformId', platformType='$platformType', role=$role)"
+        return "User(id=$id, nickName='$nickName', email='$email', platformId='$platformId', platformType='$platformType', profileImageUrl='$profileImageUrl', role=$role)"
     }
 }

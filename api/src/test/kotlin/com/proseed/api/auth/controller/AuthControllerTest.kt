@@ -46,7 +46,7 @@ internal class AuthControllerTest(
         val register = AuthRegisterRequest("hongchanhui", "ghdcksgml2@naver.com", "123456722", "KAKAO")
         authService.register(register)
 
-        val authenticate = AuthRequest("123456722", "KAKAO")
+        val authenticate = AuthRequest("ghdcksgml2@naver.com", "123456722")
         val authenticateJson = ObjectMapper().writeValueAsString(authenticate)
 
         mockMvc.perform(

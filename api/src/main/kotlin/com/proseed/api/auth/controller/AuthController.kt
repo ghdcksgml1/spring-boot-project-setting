@@ -6,7 +6,7 @@ import com.proseed.api.auth.dto.AuthResponse
 import com.proseed.api.auth.dto.kakao.KakaoLoginPageResponse
 import com.proseed.api.auth.dto.kakao.KakaoTokenResponse
 import com.proseed.api.auth.service.AuthService
-import com.proseed.api.user.exception.UserNotFoundException
+import com.proseed.api.config.exception.user.UserNotFoundException
 import com.proseed.api.user.model.User
 import com.proseed.api.user.repository.UserRepository
 import org.springframework.http.ResponseEntity
@@ -29,7 +29,7 @@ class AuthController(
     @GetMapping("/kakao/callback")
     fun kakaoTokenProvider(
         @RequestParam("code") code: String
-    ): ResponseEntity<KakaoTokenResponse> {
+    ): ResponseEntity<AuthResponse> {
         return ResponseEntity.ok(authService.kakaoTokenProvider(code))
     }
 
@@ -53,8 +53,8 @@ class AuthController(
     @GetMapping("/valid")
     fun isValidToken(
         @AuthenticationPrincipal user: User
-    ): Boolean {
-        return user != null
+    ): User {
+        return user
     }
 
     @PostMapping("/test")

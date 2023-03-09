@@ -1,4 +1,4 @@
-package com.proseed.api.user.exception
+package com.proseed.api.config.exception.user
 
 import com.proseed.api.config.exception.ApiException
 
