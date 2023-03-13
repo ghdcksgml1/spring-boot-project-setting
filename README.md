@@ -8,10 +8,11 @@
 - JWT
 - MySQL
 - Spring Data JPA
+- KaKao OAuth 2.0
 
 ## 추가 예정
 
-- KaKao OAuth 2.0
+- AWS S3
 - Toss Payments API Module
 - QueryDSL
 - Spring REST Docs or Swagger 3.0 (?)
